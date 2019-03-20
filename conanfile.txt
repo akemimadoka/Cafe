@@ -1,0 +1,6 @@
+[requires]
+gsl_microsoft/2.0.0@bincrafters/stable
+Catch2/2.5.0@catchorg/stable
+
+[generators]
+cmake

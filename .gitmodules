@@ -1,0 +1,3 @@
+[submodule "Cafe.Encoding"]
+	path = Cafe.Encoding
+	url = git@github.com:akemimadoka/Cafe.Encoding.git
