@@ -113,4 +113,19 @@ namespace Cafe::Core::Misc
 		using FalseBase::FalseBase;
 	};
 
+	/// @brief  判断类型在此 trait 实例化之时是否完整
+	/// @remark 即使一个不完整类型在此 trait 实例化之后提供了完整定义，之后仍会判断为 false
+	template <typename T, typename = void>
+	struct IsCompleteTrait : std::false_type
+	{
+	};
+
+	template <typename T>
+	struct IsCompleteTrait<T, std::void_t<decltype(sizeof(T))>> : std::true_type
+	{
+	};
+
+	template <typename T>
+	constexpr bool IsComplete = IsCompleteTrait<T>::value;
+
 } // namespace Cafe::Core::Misc
