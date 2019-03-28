@@ -5,4 +5,4 @@ target_include_directories(Cafe.Core INTERFACE
     $<INSTALL_INTERFACE:include>
 )
 
-target_compile_features(Cafe.Core INTERFACE cxx_std_17)
+target_compile_features(Cafe.Core INTERFACE cxx_std_20)
