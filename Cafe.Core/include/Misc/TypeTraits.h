@@ -39,9 +39,9 @@ namespace Cafe::Core::Misc
 
 	template <typename T, typename Mapper, typename... Args>
 	constexpr T MapConstruct(Mapper&& mapper, Args&&... args) noexcept(
-	    (... && noexcept(std::forward<Mapper>(mapper).Map(std::forward<Args>(args)))))
+	    (... && noexcept(std::forward<Mapper>(mapper)(std::forward<Args>(args)))))
 	{
-		return T(std::forward<Mapper>(mapper).Map(std::forward<Args>(args))...);
+		return T(std::forward<Mapper>(mapper)(std::forward<Args>(args))...);
 	}
 
 	template <typename T>
@@ -50,7 +50,7 @@ namespace Cafe::Core::Misc
 		constexpr ConvertMapperType() noexcept = default;
 
 		template <typename U>
-		static constexpr T Map(U&& arg) noexcept(std::is_nothrow_constructible_v<T, U&&>)
+		constexpr T operator()(U&& arg) noexcept(std::is_nothrow_constructible_v<T, U&&>)
 		{
 			return T(std::forward<U>(arg));
 		}
@@ -128,4 +128,16 @@ namespace Cafe::Core::Misc
 	template <typename T>
 	constexpr bool IsComplete = IsCompleteTrait<T>::value;
 
+	/// @brief  用于对一组非 void 的表达式进行无顺序保证计算，也可以用于检查合法性
+	struct UnseqEvaluatorType
+	{
+		constexpr UnseqEvaluatorType() noexcept = default;
+
+		template <typename... T>
+		constexpr void operator()(T&&...) noexcept
+		{
+		}
+	};
+
+	constexpr UnseqEvaluatorType UnseqEvaluator{};
 } // namespace Cafe::Core::Misc

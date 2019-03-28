@@ -7,15 +7,13 @@
 #			ifdef __GNUC__
 #				define CAFE_PUBLIC [[gnu::dllexport]]
 #			else
-#				define CAFE_PUBLIC                                                                        \
-					__declspec(dllexport) // Note: actually gcc seems to also supports this syntax.
+#				define CAFE_PUBLIC __declspec(dllexport)
 #			endif
 #		else
 #			ifdef __GNUC__
 #				define CAFE_PUBLIC [[gnu::dllimport]]
 #			else
-#				define CAFE_PUBLIC                                                                        \
-					__declspec(dllimport) // Note: actually gcc seems to also supports this syntax.
+#				define CAFE_PUBLIC __declspec(dllimport)
 #			endif
 #		endif
 #		define CAFE_LOCAL
