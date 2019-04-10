@@ -21,8 +21,20 @@ endif()
 
 add_subdirectory(Cafe.Core)
 
-set(CAFE_INCLUDE_ENCODING OFF CACHE BOOL "Build encoding library")
+set(CAFE_INCLUDE_ENCODING OFF CACHE BOOL "Include encoding library")
 
 if(CAFE_INCLUDE_ENCODING)
     add_subdirectory(Cafe.Encoding)
-endif(CAFE_INCLUDE_ENCODING)
+endif()
+
+set(CAFE_INCLUDE_ERROR_HANDLING OFF CACHE BOOL "Include error handling library")
+
+if(CAFE_INCLUDE_ERROR_HANDLING)
+    add_subdirectory(Cafe.ErrorHandling)
+endif()
+
+set(CAFE_INCLUDE_TEXT_UTILS OFF CACHE BOOL "Include text utilities library")
+
+if(CAFE_INCLUDE_TEXT_UTILS)
+    add_subdirectory(Cafe.TextUtils)
+endif()
