@@ -49,7 +49,7 @@ namespace Cafe::Core::Misc
 		using TypeTuple = std::tuple<T...>;
 
 		template <std::size_t I>
-		using NthElem = std::tuple_element_t<TypeTuple, I>;
+		using NthElem = std::tuple_element_t<I, TypeTuple>;
 
 	public:
 		constexpr std::size_t GetIndex() const noexcept

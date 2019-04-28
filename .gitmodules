@@ -1,3 +1,9 @@
 [submodule "Cafe.Encoding"]
 	path = Cafe.Encoding
-	url = git@github.com:akemimadoka/Cafe.Encoding.git
+	url = https://github.com/akemimadoka/Cafe.Encoding.git
+[submodule "Cafe.ErrorHandling"]
+	path = Cafe.ErrorHandling
+	url = https://github.com/akemimadoka/Cafe.ErrorHandling.git
+[submodule "Cafe.TextUtils"]
+	path = Cafe.TextUtils
+	url = https://github.com/akemimadoka/Cafe.TextUtils.git
