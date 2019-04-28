@@ -14,5 +14,4 @@ install(DIRECTORY include/
     FILES_MATCHING PATTERN "*.h")
 
 install(EXPORT Core
-    NAMESPACE Cafe.
     DESTINATION cmake/Core)
