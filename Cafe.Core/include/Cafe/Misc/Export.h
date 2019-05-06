@@ -18,7 +18,7 @@
 #		endif
 #		define CAFE_LOCAL
 #	else
-#		define CAFE_PUBLIC extern
+#		define CAFE_PUBLIC
 #		define CAFE_LOCAL
 #	endif
 #else

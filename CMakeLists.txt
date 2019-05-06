@@ -38,3 +38,9 @@ set(CAFE_INCLUDE_TEXT_UTILS OFF CACHE BOOL "Include text utilities library")
 if(CAFE_INCLUDE_TEXT_UTILS)
     add_subdirectory(Cafe.TextUtils)
 endif()
+
+set(CAFE_INCLUDE_IO OFF CACHE BOOL "Include io library")
+
+if(CAFE_INCLUDE_IO)
+    add_subdirectory(Cafe.Io)
+endif()

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "TypeTraits.h"
 
 namespace Cafe::Core::Misc
@@ -7,16 +9,16 @@ namespace Cafe::Core::Misc
 		template <typename Tuple, typename Callable, std::size_t... I>
 		constexpr auto ForEachImpl(Tuple&& tuple, Callable&& callable,
 		                           std::index_sequence<I...>) /*noexcept(noexcept(std::tuple{ [&] {
-			if constexpr (!std::is_void_v<std::invoke_result_t<
-			                  Callable&&, decltype(std::get<I>(std::forward<Tuple>(tuple)))>>)
-			{
-				return std::forward<Callable>(callable)(std::get<I>(std::forward<Tuple>(tuple)));
-			}
-			else
-			{
-				std::forward<Callable>(callable)(std::get<I>(std::forward<Tuple>(tuple)));
-				return Identity<void>{};
-			}
+		  if constexpr (!std::is_void_v<std::invoke_result_t<
+		                    Callable&&, decltype(std::get<I>(std::forward<Tuple>(tuple)))>>)
+		  {
+		    return std::forward<Callable>(callable)(std::get<I>(std::forward<Tuple>(tuple)));
+		  }
+		  else
+		  {
+		    std::forward<Callable>(callable)(std::get<I>(std::forward<Tuple>(tuple)));
+		    return Identity<void>{};
+		  }
 		}()... }))*/
 		{
 			return std::tuple{ [&] {
@@ -209,4 +211,13 @@ namespace Cafe::Core::Misc
 			return (FirstType{} | ... | flags);
 		}
 	}
+
+	template <typename Seq>
+	struct SequenceToArray;
+
+	template <template <typename T, T...> typename SeqTemplate, typename T, T... Value>
+	struct SequenceToArray<SeqTemplate<T, Value...>>
+	{
+		static constexpr T Array[]{ Value... };
+	};
 } // namespace Cafe::Core::Misc

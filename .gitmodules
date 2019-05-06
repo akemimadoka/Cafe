@@ -7,3 +7,6 @@
 [submodule "Cafe.TextUtils"]
 	path = Cafe.TextUtils
 	url = https://github.com/akemimadoka/Cafe.TextUtils.git
+[submodule "Cafe.Io"]
+	path = Cafe.Io
+	url = https://github.com/akemimadoka/Cafe.Io.git
