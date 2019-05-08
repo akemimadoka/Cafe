@@ -19,6 +19,8 @@ if(BUILD_SHARED_LIBS)
     add_compile_definitions(CAFE_BUILDING_DLL)
 endif()
 
+set(CAFE_INCLUDE_TESTS OFF CACHE BOOL "Include tests, if this option is not enabled, all tests will not be included even explicit enabled")
+
 add_subdirectory(Cafe.Core)
 
 set(CAFE_INCLUDE_ENCODING OFF CACHE BOOL "Include encoding library")
