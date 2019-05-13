@@ -4,7 +4,7 @@ project(Cafe CXX)
 
 if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
     message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-    file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.13/conan.cmake"
+    file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.14/conan.cmake"
                   "${CMAKE_BINARY_DIR}/conan.cmake")
 endif()
 
@@ -17,6 +17,9 @@ conan_cmake_run(CONANFILE conanfile.txt
 add_compile_definitions(CAFE_BUILDING)
 if(BUILD_SHARED_LIBS)
     add_compile_definitions(CAFE_BUILDING_DLL)
+    if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+        set(CMAKE_SHARED_LIBRARY_PREFIX "")
+    endif()
 endif()
 
 set(CAFE_INCLUDE_TESTS OFF CACHE BOOL "Include tests, if this option is not enabled, all tests will not be included even explicit enabled")
