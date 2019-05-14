@@ -38,6 +38,12 @@ if(CAFE_INCLUDE_ERROR_HANDLING)
     add_subdirectory(Cafe.ErrorHandling)
 endif()
 
+set(CAFE_INCLUDE_ENVIRONMENT OFF CACHE BOOL "Include environment library")
+
+if(CAFE_INCLUDE_ENVIRONMENT)
+    add_subdirectory(Cafe.Environment)
+endif()
+
 set(CAFE_INCLUDE_TEXT_UTILS OFF CACHE BOOL "Include text utilities library")
 
 if(CAFE_INCLUDE_TEXT_UTILS)

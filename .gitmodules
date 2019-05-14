@@ -10,3 +10,6 @@
 [submodule "Cafe.Io"]
 	path = Cafe.Io
 	url = https://github.com/akemimadoka/Cafe.Io.git
+[submodule "Cafe.Environment"]
+	path = Cafe.Environment
+	url = https://github.com/akemimadoka/Cafe.Environment.git
