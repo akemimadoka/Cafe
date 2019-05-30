@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(Cafe CXX)
+project(Cafe
+    VERSION 0.1
+    DESCRIPTION "A general purpose C++ library"
+    HOMEPAGE_URL "https://github.com/akemimadoka/Cafe"
+    LANGUAGES "CXX")
 
 if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
     message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
