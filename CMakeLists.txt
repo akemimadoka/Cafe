@@ -26,7 +26,8 @@ if(BUILD_SHARED_LIBS)
     endif()
 endif()
 
-set(CAFE_INCLUDE_TESTS OFF CACHE BOOL "Include tests, if this option is not enabled, all tests will not be included even explicit enabled")
+set(CAFE_INCLUDE_TESTS OFF CACHE BOOL
+    "Include tests, if this option is not enabled, all tests will be excluded even explicit enabled")
 
 add_subdirectory(Cafe.Core)
 
