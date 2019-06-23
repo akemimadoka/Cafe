@@ -6,6 +6,8 @@
 #define CAFE_STRINGIFY_IMPL(a) #a
 #define CAFE_STRINGIFY(a) CAFE_STRINGIFY_IMPL(a)
 
+#define CAFE_ID(...) __VA_ARGS__
+
 #define CAFE_GET_HEAD(a, ...) a
 #define CAFE_GET_TAIL(a, ...) __VA_ARGS__
 
