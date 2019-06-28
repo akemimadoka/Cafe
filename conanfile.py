@@ -80,4 +80,6 @@ class CafeConan(ConanFile):
         cmake.install()
 
     def package_info(self):
-        self.cpp_info.libs = tools.collect_libs(self)
+        #self.cpp_info.libs = tools.collect_libs(self)
+        self.cpp_info.libs = [ "Cafe.Encoding.RuntimeEncoding", "Cafe.Encoding.UnicodeData",
+            "Cafe.Environment", "Cafe.Io.Streams", "Cafe.ErrorHandling" ]
