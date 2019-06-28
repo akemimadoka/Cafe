@@ -6,6 +6,9 @@ project(Cafe
     HOMEPAGE_URL "https://github.com/akemimadoka/Cafe"
     LANGUAGES "CXX")
 
+set(CAFE_INCLUDE_TESTS OFF CACHE BOOL
+    "Include tests, if this option is not enabled, all tests will be excluded even explicit enabled")
+
 if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
     message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
     file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.14/conan.cmake"
@@ -14,9 +17,16 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-conan_cmake_run(CONANFILE conanfile.txt
+if(CAFE_INCLUDE_TESTS)
+    set(INCLUDE_TESTS True)
+else()
+    set(INCLUDE_TESTS False)
+endif()
+
+conan_cmake_run(CONANFILE conanfile.py
                 BASIC_SETUP CMAKE_TARGETS
-                BUILD missing)
+                BUILD missing
+                OPTIONS "CAFE_INCLUDE_TESTS=${INCLUDE_TESTS}")
 
 add_compile_definitions(CAFE_BUILDING)
 if(BUILD_SHARED_LIBS)
@@ -25,9 +35,6 @@ if(BUILD_SHARED_LIBS)
         set(CMAKE_SHARED_LIBRARY_PREFIX "")
     endif()
 endif()
-
-set(CAFE_INCLUDE_TESTS OFF CACHE BOOL
-    "Include tests, if this option is not enabled, all tests will be excluded even explicit enabled")
 
 add_subdirectory(Cafe.Core)
 
