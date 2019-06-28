@@ -32,7 +32,7 @@ Options = [
     ("CAFE_INCLUDE_TEXT_UTILS_MISC", [True, False], True),
     ("CAFE_INCLUDE_TEXT_UTILS_FORMAT", [True, False], True),
     ("CAFE_INCLUDE_TEXT_UTILS_STREAM_HELPERS", [True, False], True)
-    ]
+]
 
 class CafeConan(ConanFile):
     name = "Cafe"
