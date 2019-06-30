@@ -24,7 +24,7 @@ install:
       fi
 
 script:
-  - cmake -DCAFE_INCLUDE_TESTS=ON .
+  - cmake -DCAFE_INCLUDE_TESTS=ON -DCMAKE_BUILD_TYPE=Debug .
   - make -j4
   - bin/Cafe.Encoding.Test
   - bin/Cafe.Io.Test
