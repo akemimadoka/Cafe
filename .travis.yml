@@ -12,6 +12,7 @@ addons:
     packages:
       - gcc-9
       - g++-9
+      - python3-pip
 compiler: gcc
 install:
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60 --slave /usr/bin/g++ g++ /usr/bin/g++-9
@@ -24,6 +25,7 @@ install:
       fi
 
 script:
+  - pip3 install -U conan
   - cmake -DCAFE_INCLUDE_TESTS=ON -DCMAKE_BUILD_TYPE=Debug .
   - make -j4
   - bin/Cafe.Encoding.Test
