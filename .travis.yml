@@ -25,7 +25,8 @@ install:
       fi
 
 script:
-  - pip3 install -U setuptools conan
+  - pip3 install -U setuptools
+  - pip3 install -U conan
   - cmake -DCAFE_INCLUDE_TESTS=ON -DCMAKE_BUILD_TYPE=Debug .
   - make -j4
   - bin/Cafe.Encoding.Test
