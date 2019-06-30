@@ -36,3 +36,4 @@
 /.vscode
 
 /cmake-build-*
+/wslBuild

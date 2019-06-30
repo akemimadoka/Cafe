@@ -38,31 +38,31 @@ endif()
 
 add_subdirectory(Cafe.Core)
 
-set(CAFE_INCLUDE_ENCODING OFF CACHE BOOL "Include encoding library")
+set(CAFE_INCLUDE_ENCODING ON CACHE BOOL "Include encoding library")
 
 if(CAFE_INCLUDE_ENCODING)
     add_subdirectory(Cafe.Encoding)
 endif()
 
-set(CAFE_INCLUDE_ERROR_HANDLING OFF CACHE BOOL "Include error handling library")
+set(CAFE_INCLUDE_ERROR_HANDLING ON CACHE BOOL "Include error handling library")
 
 if(CAFE_INCLUDE_ERROR_HANDLING)
     add_subdirectory(Cafe.ErrorHandling)
 endif()
 
-set(CAFE_INCLUDE_ENVIRONMENT OFF CACHE BOOL "Include environment library")
+set(CAFE_INCLUDE_ENVIRONMENT ON CACHE BOOL "Include environment library")
 
 if(CAFE_INCLUDE_ENVIRONMENT)
     add_subdirectory(Cafe.Environment)
 endif()
 
-set(CAFE_INCLUDE_TEXT_UTILS OFF CACHE BOOL "Include text utilities library")
+set(CAFE_INCLUDE_TEXT_UTILS ON CACHE BOOL "Include text utilities library")
 
 if(CAFE_INCLUDE_TEXT_UTILS)
     add_subdirectory(Cafe.TextUtils)
 endif()
 
-set(CAFE_INCLUDE_IO OFF CACHE BOOL "Include io library")
+set(CAFE_INCLUDE_IO ON CACHE BOOL "Include io library")
 
 if(CAFE_INCLUDE_IO)
     add_subdirectory(Cafe.Io)

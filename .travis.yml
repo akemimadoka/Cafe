@@ -1,0 +1,31 @@
+language: cpp
+sudo: required
+dist: xenial
+env:
+  global:
+    - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
+addons:
+  apt:
+    update: true
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-9
+      - g++-9
+compiler: gcc
+install:
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60 --slave /usr/bin/g++ g++ /usr/bin/g++-9
+  - |
+      if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
+        CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v3.14.5/cmake-3.14.5-Linux-x86_64.tar.gz"
+        mkdir -p ${DEPS_DIR}/cmake
+        travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C ${DEPS_DIR}/cmake
+        export PATH=${DEPS_DIR}/cmake/bin:${PATH}
+      fi
+
+script:
+  - cmake -DCAFE_INCLUDE_TESTS .
+  - make -j4
+  - bin/Cafe.Encoding.Test
+  - bin/Cafe.Io.Test
+  - bin/Cafe.TextUtils.Test
