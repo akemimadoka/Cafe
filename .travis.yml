@@ -27,7 +27,7 @@ install:
 script:
   - pip3 install -U setuptools wheel
   - pip3 install -U conan
-  - cmake -DCAFE_INCLUDE_TESTS=ON -DCAFE_IO_STREAMS_INCLUDE_FILE_STREAM=OFF -DCMAKE_BUILD_TYPE=Debug .
+  - cmake -DCAFE_INCLUDE_TESTS=ON -DCMAKE_BUILD_TYPE=Debug .
   - make -j4
   - bin/Cafe.Encoding.Test
   - bin/Cafe.Io.Test
