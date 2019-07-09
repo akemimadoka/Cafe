@@ -61,7 +61,7 @@ class CafeConan(ConanFile):
 
     def requirements(self):
         if self.options.CAFE_INCLUDE_TESTS:
-            self.requires.add("Catch2/2.8.0@catchorg/stable")
+            self.requires.add("Catch2/2.9.1@catchorg/stable")
 
     def configure_cmake(self):
         cmake = CMake(self)
