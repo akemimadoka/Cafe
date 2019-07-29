@@ -18,9 +18,18 @@ namespace Cafe::Core::Misc::Math
 		assert(exp > 0);
 
 		TBase result{ 1 };
-		while (exp--)
+
+		while (exp > 1)
 		{
-			result *= base;
+            if ((exp & 1) == 1) {
+                result *= base;
+            }
+            exp /= 2;
+            base = base * base;
+		}
+
+		if (exp == 1) {
+		    result *= base;
 		}
 
 		return result;
