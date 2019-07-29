@@ -10,7 +10,7 @@ namespace Cafe::Core::Misc::Math
 	template <typename TBase, typename TExp>
 	constexpr std::enable_if_t<std::is_integral_v<TExp>, TBase> Pow(TBase base, TExp exp) noexcept
 	{
-		if (exp == TExp{})
+		if (exp == 0)
 		{
 			return TBase{ 1 };
 		}
@@ -26,7 +26,7 @@ namespace Cafe::Core::Misc::Math
 				result *= base;
 			}
 			exp /= 2;
-			base = base * base;
+			base *= base;
 		}
 
 		if (exp == 1)
