@@ -9,24 +9,29 @@ project(Cafe
 set(CAFE_INCLUDE_TESTS OFF CACHE BOOL
     "Include tests, if this option is not enabled, all tests will be excluded even explicit enabled")
 
-if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
-    message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-    file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.14/conan.cmake"
-                  "${CMAKE_BINARY_DIR}/conan.cmake")
-endif()
-
-include(${CMAKE_BINARY_DIR}/conan.cmake)
-
 if(CAFE_INCLUDE_TESTS)
-    set(INCLUDE_TESTS True)
+    set(CAFE_INCLUDE_TESTS True)
 else()
-    set(INCLUDE_TESTS False)
+    set(CAFE_INCLUDE_TESTS False)
 endif()
 
-conan_cmake_run(CONANFILE conanfile.py
-                BASIC_SETUP CMAKE_TARGETS
-                BUILD missing
-                OPTIONS "CAFE_INCLUDE_TESTS=${INCLUDE_TESTS}")
+if(CONAN_EXPORTED)
+    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    conan_basic_setup(TARGETS)
+else()
+    if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+        message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
+        file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.14/conan.cmake"
+                      "${CMAKE_BINARY_DIR}/conan.cmake")
+    endif()
+
+    include(${CMAKE_BINARY_DIR}/conan.cmake)
+    
+    conan_cmake_run(CONANFILE conanfile.py
+                    BASIC_SETUP CMAKE_TARGETS
+                    BUILD missing
+                    OPTIONS "CAFE_INCLUDE_TESTS=${CAFE_INCLUDE_TESTS}")
+endif()
 
 add_compile_definitions(CAFE_BUILDING)
 if(BUILD_SHARED_LIBS)

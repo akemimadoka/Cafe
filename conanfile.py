@@ -18,7 +18,8 @@ Options = [
 
     # Cafe.ErrorHandling
     ("CAFE_ERROR_HANDLING_INCLUDE_STACKWALKER", [True, False], False),
-    ("CAFE_ERROR_HANDLING_ENABLE_STACKWALKER_IN_CAFE_EXCEPTION", [True, False], False),
+    ("CAFE_ERROR_HANDLING_ENABLE_STACKWALKER_IN_CAFE_EXCEPTION",
+     [True, False], False),
 
     # Cafe.Io
     ("CAFE_IO_INCLUDE_STREAMS", [True, False], True),
@@ -34,6 +35,7 @@ Options = [
     ("CAFE_INCLUDE_TEXT_UTILS_STREAM_HELPERS", [True, False], True)
 ]
 
+
 class CafeConan(ConanFile):
     name = "Cafe"
     version = "0.1"
@@ -45,41 +47,55 @@ class CafeConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
 
     options = {"shared": [True, False]}
-    options.update({ "include_%s" % lib[0] : [True, False] for lib in LibList })
-    options.update({ opt[0] : opt[1] for opt in Options })
+    options.update({"include_%s" % lib[0]: [True, False] for lib in LibList})
+    options.update({opt[0]: opt[1] for opt in Options})
 
     default_options = ["shared=False"]
-    default_options.extend([ "include_%s=True" % lib[0] for lib in LibList ])
-    default_options.extend([ "{}={}".format(opt[0], opt[2]) for opt in Options ])
+    default_options.extend(["include_%s=True" % lib[0] for lib in LibList])
+    default_options.extend(["{}={}".format(opt[0], opt[2]) for opt in Options])
     default_options = tuple(default_options)
 
     generators = "cmake"
 
     requires = ("gsl_microsoft/2.0.0@bincrafters/stable")
 
-    exports_sources = "*"
+    exports_sources = ("CMakeLists.txt", "License", "Cafe.Core*", "Cafe.Encoding*", "Cafe.Environment*",
+        "Cafe.ErrorHandling*", "Cafe.Io*", "Cafe.TextUtils*")
 
     def requirements(self):
         if self.options.CAFE_INCLUDE_TESTS:
-            self.requires.add("Catch2/2.9.1@catchorg/stable")
+            self.requires("Catch2/2.9.2@catchorg/stable")
 
     def configure_cmake(self):
         cmake = CMake(self)
         cmake.definitions["BUILD_SHARED_LIBS"] = "ON" if self.options.shared else "OFF"
         for lib in LibList:
-            cmake.definitions[lib[1]] = self.options["include_%s" % lib[0]]
+            cmake.definitions[lib[1]] = getattr(
+                self.options, "include_%s" % lib[0])
+        for opt in Options:
+            cmake.definitions[opt[0]] = getattr(self.options, opt[0])
         cmake.configure()
         return cmake
 
     def build(self):
-        cmake = self.configure_cmake()
-        cmake.build()
+        if self.settings.compiler == 'Visual Studio':
+            with tools.vcvars(self.settings, filter_known_paths=False):
+                cmake = self.configure_cmake()
+                cmake.build()
+        else:
+            cmake = self.configure_cmake()
+            cmake.build()
 
     def package(self):
-        cmake = self.configure_cmake()
-        cmake.install()
+        if self.settings.compiler == 'Visual Studio':
+            with tools.vcvars(self.settings, filter_known_paths=False):
+                cmake = self.configure_cmake()
+                cmake.install()
+        else:
+            cmake = self.configure_cmake()
+            cmake.install()
 
     def package_info(self):
         #self.cpp_info.libs = tools.collect_libs(self)
-        self.cpp_info.libs = [ "Cafe.Encoding.RuntimeEncoding", "Cafe.Encoding.UnicodeData",
-            "Cafe.Environment", "Cafe.Io.Streams", "Cafe.ErrorHandling" ]
+        self.cpp_info.libs = ["Cafe.Encoding.RuntimeEncoding", "Cafe.Encoding.UnicodeData",
+                              "Cafe.Environment", "Cafe.Io.Streams", "Cafe.ErrorHandling"]
