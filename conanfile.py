@@ -26,6 +26,7 @@ Options = [
     ("CAFE_IO_INCLUDE_STREAM_HELPERS", [True, False], True),
 
     # Cafe.Io.Streams
+    ("CAFE_IO_STREAMS_USE_CONCEPTS", [True, False], True),
     ("CAFE_IO_STREAMS_INCLUDE_FILE_STREAM", [True, False], True),
     ("CAFE_IO_STREAMS_FILE_STREAM_ENABLE_FILE_MAPPING", [True, False], True),
 
@@ -34,7 +35,6 @@ Options = [
     ("CAFE_INCLUDE_TEXT_UTILS_FORMAT", [True, False], True),
     ("CAFE_INCLUDE_TEXT_UTILS_STREAM_HELPERS", [True, False], True)
 ]
-
 
 class CafeConan(ConanFile):
     name = "Cafe"
@@ -61,6 +61,10 @@ class CafeConan(ConanFile):
 
     exports_sources = ("CMakeLists.txt", "License", "Cafe.Core*", "Cafe.Encoding*", "Cafe.Environment*",
         "Cafe.ErrorHandling*", "Cafe.Io*", "Cafe.TextUtils*")
+
+    def configure(self):
+        if self.options.CAFE_IO_STREAMS_USE_CONCEPTS and self.settings.compiler != "gcc":
+            raise RuntimeError("Now only gcc supports concepts TS")
 
     def requirements(self):
         if self.options.CAFE_INCLUDE_TESTS:
@@ -97,5 +101,7 @@ class CafeConan(ConanFile):
 
     def package_info(self):
         #self.cpp_info.libs = tools.collect_libs(self)
+        if self.options.CAFE_IO_STREAMS_USE_CONCEPTS:
+            self.cpp_info.cxxflags = ["-fconcepts"]
         self.cpp_info.libs = ["Cafe.Encoding.RuntimeEncoding", "Cafe.Encoding.UnicodeData",
                               "Cafe.Environment", "Cafe.Io.Streams", "Cafe.ErrorHandling"]
