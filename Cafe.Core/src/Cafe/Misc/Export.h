@@ -1,7 +1,7 @@
 #pragma once
 
 // From https://gcc.gnu.org/wiki/Visibility
-#if defined _WIN32 || defined __CYGWIN__
+#if defined(_WIN32) || defined(__CYGWIN__)
 #	ifdef CAFE_BUILDING_DLL
 #		ifdef CAFE_BUILDING
 #			ifdef __GNUC__

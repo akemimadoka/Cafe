@@ -15,22 +15,36 @@ else()
     set(CAFE_INCLUDE_TESTS False)
 endif()
 
+set(BUILD_TESTING ${CAFE_INCLUDE_TESTS} CACHE BOOL "Build testing" FORCE)
+
 if(CONAN_EXPORTED)
     include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     conan_basic_setup(TARGETS)
 else()
     if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
-        message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-        file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.14/conan.cmake"
-                      "${CMAKE_BINARY_DIR}/conan.cmake")
+        message(STATUS "Downloading conan.cmake")
+        file(DOWNLOAD "https://raw.githubusercontent.com/akemimadoka/cmake-conan/develop/conan.cmake"
+                      "${CMAKE_BINARY_DIR}/conan.cmake" SHOW_PROGRESS
+                      STATUS _download_status)
+        list(GET _download_status 0 _download_status_code)
+        list(GET _download_status 1 _download_status_msg)
+        if(NOT _download_status_code EQUAL 0)
+            message(FATAL_ERROR "Failed to download conan.cmake, status code is ${_download_status_code}, msg is ${_download_status_msg}")
+        endif()
     endif()
 
     include(${CMAKE_BINARY_DIR}/conan.cmake)
-    
+
     conan_cmake_run(CONANFILE conanfile.py
                     BASIC_SETUP CMAKE_TARGETS
                     BUILD missing
                     OPTIONS "CAFE_INCLUDE_TESTS=${CAFE_INCLUDE_TESTS}")
+endif()
+
+if(CAFE_INCLUDE_TESTS)
+    include(CTest)
+    list(APPEND CMAKE_MODULE_PATH ${CONAN_LIB_DIRS_CATCH2}/cmake/Catch2)
+    include(ParseAndAddCatchTests)
 endif()
 
 add_compile_definitions(CAFE_BUILDING)

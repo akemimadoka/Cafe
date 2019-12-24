@@ -138,7 +138,7 @@ namespace Cafe::Core::Misc
 	/// @brief  测试枚举或 BitMask 类型中 test 是否设置了 mask 中包含的任何一位 flag
 	/// @remark 若 mask 为全 0，结果为 false
 	template <typename T>
-	constexpr bool HasAnyFlagsSet(T test, T mask) noexcept
+	constexpr bool HasAnyFlagsSet(T const& test, T const& mask) noexcept
 	{
 		if constexpr (std::is_enum_v<T>)
 		{
@@ -154,7 +154,7 @@ namespace Cafe::Core::Misc
 	/// @brief  测试枚举或 BitMask 类型中 test 是否设置了 mask 中包含的所有 flag
 	/// @remark 若 mask 为全 0，结果为 true
 	template <typename T>
-	constexpr bool HasAllFlagsSet(T test, T mask) noexcept
+	constexpr bool HasAllFlagsSet(T const& test, T const& mask) noexcept
 	{
 		if constexpr (std::is_enum_v<T>)
 		{
@@ -168,7 +168,7 @@ namespace Cafe::Core::Misc
 	}
 
 	template <typename T>
-	constexpr T SetFlags(T src, T mask) noexcept
+	constexpr T SetFlags(T const& src, T const& mask) noexcept
 	{
 		if constexpr (std::is_enum_v<T>)
 		{
@@ -182,7 +182,7 @@ namespace Cafe::Core::Misc
 	}
 
 	template <typename T>
-	constexpr T ClearFlags(T src, T mask) noexcept
+	constexpr T ClearFlags(T const& src, T const& mask) noexcept
 	{
 		if constexpr (std::is_enum_v<T>)
 		{
@@ -196,7 +196,7 @@ namespace Cafe::Core::Misc
 	}
 
 	template <typename... T>
-	constexpr auto ComposeFlags(T... flags) noexcept
+	constexpr auto ComposeFlags(T const&... flags) noexcept
 	{
 		static_assert(sizeof...(flags) > 0,
 		              "Cafe::Core::Misc::ComposeFlags requires one or more arguments.");

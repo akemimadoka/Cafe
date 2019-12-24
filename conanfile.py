@@ -57,7 +57,7 @@ class CafeConan(ConanFile):
 
     generators = "cmake"
 
-    requires = ("gsl_microsoft/2.0.0@bincrafters/stable")
+    requires = "ms-gsl/2.0.0"
 
     exports_sources = ("CMakeLists.txt", "License", "Cafe.Core*", "Cafe.Encoding*", "Cafe.Environment*",
         "Cafe.ErrorHandling*", "Cafe.Io*", "Cafe.TextUtils*")
@@ -68,7 +68,7 @@ class CafeConan(ConanFile):
 
     def requirements(self):
         if self.options.CAFE_INCLUDE_TESTS:
-            self.requires("Catch2/2.9.2@catchorg/stable")
+            self.requires("Catch2/2.11.0@catchorg/stable")
 
     def configure_cmake(self):
         cmake = CMake(self)
