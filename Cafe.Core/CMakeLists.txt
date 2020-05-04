@@ -1,3 +1,5 @@
+set(CAFE_CORE_INCLUDE_TEST ON CACHE BOOL "Include core test")
+
 add_library(Cafe.Core INTERFACE)
 
 target_include_directories(Cafe.Core INTERFACE
@@ -15,3 +17,7 @@ install(DIRECTORY src/
 
 install(EXPORT Core
     DESTINATION cmake/Core)
+
+if(CAFE_INCLUDE_TESTS AND CAFE_CORE_INCLUDE_TEST)
+    add_subdirectory(Test)
+endif()

@@ -439,58 +439,66 @@ namespace Cafe::Core::Misc
 	{
 	};
 
-	template <typename Prototype>
-	class FunctionView
+	namespace Detail
 	{
-		using PrototypeTraits = FunctionTraits<Prototype>;
-		using ForwardFunctionPrototype = typename MakeFunctionTypeFromTuple<
-		    GetFunctionTraitsEnum<Prototype>, typename PrototypeTraits::ResultType,
-		    decltype(std::tuple_cat(std::tuple<void*>, typename PrototypeTraits::ArgsTuple))>::Result;
+		template <typename RetType, typename FunctorMapper, std::size_t N, typename ArgsTuple,
+		          typename OpaqueType = void, typename HeadTuple = std::tuple<>,
+		          typename TailTuple = std::tuple<>>
+		struct FunctionPtrBindingInfoImpl;
 
-	public:
-		template <typename Functor>
-		constexpr FunctionView(Functor&& functor) : m_OriginFunctionObjectView{}, m_ForwardFunction{}
+		template <typename RetType, typename FunctorMapper, std::size_t N, typename Arg,
+		          typename... Args, typename... HeadType>
+		struct FunctionPtrBindingInfoImpl<RetType, FunctorMapper, N, std::tuple<Arg, Args...>, void,
+		                                  std::tuple<HeadType...>>
+		    : FunctionPtrBindingInfoImpl<RetType, FunctorMapper, N == std::size_t(-1) ? N : N - 1,
+		                                 std::tuple<Args...>, std::tuple<HeadType..., Arg>>
 		{
-			if constexpr (std::is_function_v<std::remove_pointer_t<RemoveCvRef<Functor>>>)
+		};
+
+		template <typename RetType, typename FunctorMapper, typename Arg, typename... Args,
+		          typename... HeadType>
+		struct FunctionPtrBindingInfoImpl<RetType, FunctorMapper, 0, std::tuple<Arg, Args...>, void,
+		                                  std::tuple<HeadType...>>
+		    : FunctionPtrBindingInfoImpl<RetType, FunctorMapper, 0, std::tuple<>, Arg,
+		                                 std::tuple<HeadType...>, std::tuple<Args...>>
+		{
+		};
+
+		template <typename RetType, typename FunctorMapper, typename OpaqueType, typename... HeadType,
+		          typename... TailType>
+		struct FunctionPtrBindingInfoImpl<RetType, FunctorMapper, 0, std::tuple<>, OpaqueType,
+		                                  std::tuple<HeadType...>, std::tuple<TailType...>>
+		{
+			static constexpr RetType ResultFunction(HeadType... head, OpaqueType opaque, TailType... tail)
 			{
-				m_OriginFunctionObjectView = +functor;
-				m_ForwardFunction = []<typename... Args>(void* objectView, Args&&... args) noexcept(
-				    IsFunctionNoexcept<Prototype>::value)
-				{
-					return reinterpret_cast<decltype(+functor)>(objectView)(std::forward<Args>(args)...);
-				};
+				return static_cast<RetType>(
+				    FunctorMapper::Cast(opaque)(std::move(head)..., std::move(tail)...));
 			}
-			else
-			{
-				m_OriginFunctionObjectView =
-				    static_cast<void*>(const_cast<RemoveCvRef<Functor>*>(std::addressof(functor)));
-				m_ForwardFunction = []<typename... Args>(void* objectView, Args&&... args) noexcept(
-				    IsFunctionNoexcept<Prototype>::value)
-				{
-					return static_cast<Functor&&>(*static_cast<std::remove_reference_t<Functor>*>(
-					    objectView))(std::forward<Args>(args)...);
-				};
-			}
-		}
+		};
 
-		template <typename... Args>
-		constexpr decltype(auto) operator()(Args&&... args) const noexcept(IsFunctionNoexcept<Prototype>::value)
+		template <std::size_t N, typename ArgsTuple>
+		struct FunctionPtrBindingInfo;
+	} // namespace Detail
+
+	template <typename Functor>
+	struct OpaquePtrToFunctorPtr
+	{
+		template <typename OpaquePtr>
+		static constexpr Functor& Cast(OpaquePtr opaque)
 		{
-			return m_ForwardFunction(m_OriginFunctionObjectView, std::forward<Args>(args)...);
+			return *static_cast<Functor*>(opaque);
 		}
+	};
 
-		constexpr void* GetOriginFunctionObjectView() const noexcept
-		{
-			return m_OriginFunctionObjectView;
-		}
+	template <typename FuncPtrType, std::size_t OpaqueParamIndex>
+	struct FunctionPtrBindingBuilder;
 
-		constexpr ForwardFunctionPrototype* GetForwardFunctionPointer() const noexcept
-		{
-			return m_ForwardFunction;
-		}
-
-	private:
-		void* m_OriginFunctionObjectView;
-		ForwardFunctionPrototype* m_ForwardFunction;
+	template <typename RetType, typename... ArgsType, std::size_t OpaqueParamIndex>
+	struct FunctionPtrBindingBuilder<RetType (*)(ArgsType...), OpaqueParamIndex>
+	{
+		template <typename FunctorMapper>
+		static constexpr auto ResultFunction =
+		    Detail::FunctionPtrBindingInfoImpl<RetType, FunctorMapper, OpaqueParamIndex,
+		                                       std::tuple<ArgsType...>>::ResultFunction;
 	};
 } // namespace Cafe::Core::Misc
