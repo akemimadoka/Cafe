@@ -57,8 +57,6 @@ class CafeConan(ConanFile):
 
     generators = "cmake"
 
-    requires = "ms-gsl/3.0.1"
-
     exports_sources = ("CMakeLists.txt", "License", "Cafe.Core*", "Cafe.Encoding*", "Cafe.Environment*",
         "Cafe.ErrorHandling*", "Cafe.Io*", "Cafe.TextUtils*")
 
@@ -72,7 +70,6 @@ class CafeConan(ConanFile):
 
     def configure_cmake(self):
         cmake = CMake(self)
-        cmake.definitions["BUILD_SHARED_LIBS"] = "ON" if self.options.shared else "OFF"
         for lib in LibList:
             cmake.definitions[lib[1]] = getattr(
                 self.options, "include_%s" % lib[0])
