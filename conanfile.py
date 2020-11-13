@@ -60,13 +60,9 @@ class CafeConan(ConanFile):
     exports_sources = ("CMakeLists.txt", "License", "Cafe.Core*", "Cafe.Encoding*", "Cafe.Environment*",
         "Cafe.ErrorHandling*", "Cafe.Io*", "Cafe.TextUtils*")
 
-    def configure(self):
-        if self.options.CAFE_IO_STREAMS_USE_CONCEPTS and self.settings.compiler != "gcc":
-            raise RuntimeError("Now only gcc supports concepts TS")
-
     def requirements(self):
         if self.options.CAFE_INCLUDE_TESTS:
-            self.requires("catch2/2.12.1")
+            self.requires("catch2/3.0.0@catchorg/stable")
 
     def configure_cmake(self):
         cmake = CMake(self)
@@ -98,7 +94,5 @@ class CafeConan(ConanFile):
 
     def package_info(self):
         #self.cpp_info.libs = tools.collect_libs(self)
-        if self.options.CAFE_IO_STREAMS_USE_CONCEPTS:
-            self.cpp_info.cxxflags = ["-fconcepts"]
         self.cpp_info.libs = ["Cafe.Encoding.RuntimeEncoding", "Cafe.Encoding.UnicodeData",
                               "Cafe.Environment", "Cafe.Io.Streams", "Cafe.ErrorHandling"]
