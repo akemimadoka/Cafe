@@ -16,6 +16,7 @@ jobs:
       env:
         - COMPILER_ENV="export CC=gcc-10 && export CXX=g++-10"
       arch: amd64
+  allow_failures:
     - &clang
       addons:
         apt:
@@ -32,8 +33,6 @@ jobs:
         - echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-11 main" | sudo tee -a /etc/apt/sources.list
         - sudo apt update
         - sudo apt install clang-11
-  # 可选支持 arm
-  allow_failures:
     - <<: *gcc
       arch: arm64
     # llvm 官方源暂不支持 arm，使用旧版本
