@@ -1,34 +1,83 @@
 language: cpp
-sudo: required
-dist: xenial
-env:
-  global:
-    - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
-addons:
-  apt:
-    update: true
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - gcc-9
-      - g++-9
-      - python3-pip
-compiler: gcc
+os: linux
+dist: bionic
+
+jobs:
+  include:
+    - &gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-10
+            - python3
+            - python3-pip
+      env:
+        - COMPILER_ENV="export CC=gcc-10 && export CXX=g++-10"
+      arch: amd64
+    - &clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - python3
+            - python3-pip
+      env:
+        - COMPILER_ENV="export CC=clang-11 && export CXX=clang++-11"
+      arch: amd64
+      before_install:
+        - wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+        - echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic main" | sudo tee -a /etc/apt/sources.list
+        - sudo apt update
+        - sudo apt install clang-11
+  # 可选支持 arm
+  allow_failures:
+    - <<: *gcc
+      arch: arm64
+    # llvm 官方源暂不支持 arm，使用旧版本
+    # - <<: *clang
+    #   arch: arm64
+    - addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - clang
+            - python3
+            - python3-pip
+      env:
+        - COMPILER_ENV="export CC=clang && export CXX=clang++"
+
 install:
-  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60 --slave /usr/bin/g++ g++ /usr/bin/g++-9
-  - |
-      if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
-        CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v3.14.5/cmake-3.14.5-Linux-x86_64.tar.gz"
-        mkdir -p ${DEPS_DIR}/cmake
-        travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C ${DEPS_DIR}/cmake
-        export PATH=${DEPS_DIR}/cmake/bin:${PATH}
-      fi
+  - wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
+  - sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
+  - sudo apt-get update
+  - sudo apt install cmake -y
+  - sudo python3 -m pip install -U setuptools wheel
+  - sudo python3 -m pip install -U conan
+  - conan profile new default --detect --force
+  - conan profile update settings.compiler.libcxx=libstdc++11 default
+
+before_script:
+  - eval "${COMPILER_ENV}"
+  - CMAKE=/usr/bin/cmake
+  - CTEST=/usr/bin/ctest
+  - export CONAN_CMAKE_PROGRAM=$CMAKE
 
 script:
-  - pip3 install -U setuptools wheel
-  - pip3 install -U conan
-  - cmake -DCAFE_INCLUDE_TESTS=ON -DCMAKE_BUILD_TYPE=Debug .
-  - make -j4
-  - bin/Cafe.Encoding.Test
-  - bin/Cafe.Io.Test
-  - bin/Cafe.TextUtils.Test
+  - mkdir build-debug && pushd build-debug
+  - INSTALL_PREFIX=$(pwd)/Install
+  - $CMAKE .. -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DCMAKE_BUILD_TYPE=Debug -DCAFE_INCLUDE_TESTS=ON
+  - $CMAKE --build . --parallel
+  - $CMAKE --install .
+  - $CTEST
+  - popd
+  - mkdir build-release && pushd build-release
+  - INSTALL_PREFIX=$(pwd)/Install
+  - $CMAKE .. -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DCMAKE_BUILD_TYPE=Release -DCAFE_INCLUDE_TESTS=ON
+  - $CMAKE --build . --parallel
+  - $CMAKE --install .
+  - $CTEST
+  - popd
