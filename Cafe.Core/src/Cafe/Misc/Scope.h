@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TypeTraits.h"
+#include "UtilityMacros.h"
 
 namespace Cafe::Core::Misc
 {
@@ -70,5 +71,14 @@ namespace Cafe::Core::Misc
 	} // namespace Detail
 } // namespace Cafe::Core::Misc
 
-#define CAFE_SCOPE_EXIT ::Cafe::Core::Misc::Detail::ScopeMaker<::Cafe::Core::Misc::AlwaysInvoke> * [&]
-#define CAFE_SCOPE_FAIL ::Cafe::Core::Misc::Detail::ScopeMaker<::Cafe::Core::Misc::InvokeOnError> * [&]
+#define CAFE_SCOPE_EXIT_ID(id) const auto id = ::Cafe::Core::Misc::Detail::ScopeMaker<::Cafe::Core::Misc::AlwaysInvoke> * [&]
+#define CAFE_SCOPE_FAIL_ID(id) const auto id = ::Cafe::Core::Misc::Detail::ScopeMaker<::Cafe::Core::Misc::InvokeOnError> * [&]
+
+#ifdef __COUNTER__
+#define CAFE_SCOPE_MAGIC_ID CAFE_CONCAT(cafeScopeMagicId, __COUNTER__)
+#else
+#define CAFE_SCOPE_MAGIC_ID CAFE_CONCAT(cafeScopeMagicId, __LINE__)
+#endif
+
+#define CAFE_SCOPE_EXIT CAFE_SCOPE_EXIT_ID(CAFE_SCOPE_MAGIC_ID)
+#define CAFE_SCOPE_FAIL CAFE_SCOPE_FAIL_ID(CAFE_SCOPE_MAGIC_ID)
