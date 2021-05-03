@@ -28,7 +28,8 @@ namespace Cafe::Core::Misc
 	{
 	public:
 		template <typename... Args>
-		explicit Scope(Args&&... args) noexcept(std::is_nothrow_constructible_v<Callable, Args&&...>)
+		explicit Scope(Args&&... args) noexcept(
+		    std::is_nothrow_constructible_v<Callable, Args&&...>)
 		    : m_Callable(std::forward<Args>(args)...)
 		{
 		}
@@ -62,22 +63,25 @@ namespace Cafe::Core::Misc
 		template <typename Callable, typename InvokeCondition>
 		constexpr Scope<Core::Misc::RemoveCvRef<Callable>, InvokeCondition>
 		operator*(ScopeMakerType<InvokeCondition>, Callable&& callable) noexcept(
-		    std::is_nothrow_constructible_v<Scope<Core::Misc::RemoveCvRef<Callable>, InvokeCondition>,
-		                                    Callable&&>)
+		    std::is_nothrow_constructible_v<
+		        Scope<Core::Misc::RemoveCvRef<Callable>, InvokeCondition>, Callable&&>)
 		{
-			return Scope<Core::Misc::RemoveCvRef<Callable>, InvokeCondition>{ std::forward<Callable>(
-				  callable) };
+			return Scope<Core::Misc::RemoveCvRef<Callable>, InvokeCondition>{
+				std::forward<Callable>(callable)
+			};
 		}
 	} // namespace Detail
 } // namespace Cafe::Core::Misc
 
-#define CAFE_SCOPE_EXIT_ID(id) const auto id = ::Cafe::Core::Misc::Detail::ScopeMaker<::Cafe::Core::Misc::AlwaysInvoke> * [&]
-#define CAFE_SCOPE_FAIL_ID(id) const auto id = ::Cafe::Core::Misc::Detail::ScopeMaker<::Cafe::Core::Misc::InvokeOnError> * [&]
+#define CAFE_SCOPE_EXIT_ID(id)                                                                     \
+	const auto id = ::Cafe::Core::Misc::Detail::ScopeMaker<::Cafe::Core::Misc::AlwaysInvoke>* [&]
+#define CAFE_SCOPE_FAIL_ID(id)                                                                     \
+	const auto id = ::Cafe::Core::Misc::Detail::ScopeMaker<::Cafe::Core::Misc::InvokeOnError>* [&]
 
 #ifdef __COUNTER__
-#define CAFE_SCOPE_MAGIC_ID CAFE_CONCAT(cafeScopeMagicId, __COUNTER__)
+#	define CAFE_SCOPE_MAGIC_ID CAFE_CONCAT(cafeScopeMagicId, __COUNTER__)
 #else
-#define CAFE_SCOPE_MAGIC_ID CAFE_CONCAT(cafeScopeMagicId, __LINE__)
+#	define CAFE_SCOPE_MAGIC_ID CAFE_CONCAT(cafeScopeMagicId, __LINE__)
 #endif
 
 #define CAFE_SCOPE_EXIT CAFE_SCOPE_EXIT_ID(CAFE_SCOPE_MAGIC_ID)

@@ -1,3 +1,5 @@
+/// @file	Optional.h
+///	@remark 未完工，仅为思考方向用
 #pragma once
 
 #include "TypeTraits.h"
@@ -92,7 +94,8 @@ namespace Cafe::Core::Misc
 		constexpr Optional() noexcept = default;
 
 		template <typename... Args>
-		constexpr Optional(std::in_place_t, Args&&... args) : m_Storage{ std::forward<Args>(args)... }
+		constexpr Optional(std::in_place_t, Args&&... args)
+		    : m_Storage{ std::forward<Args>(args)... }
 		{
 			m_Checker.Emplace(std::addressof(m_Storage));
 		}
@@ -121,6 +124,14 @@ namespace Cafe::Core::Misc
 		               std::make_index_sequence<sizeof...(Args1)>{}, checkerArgs,
 		               std::make_index_sequence<sizeof...(Args2)>{})
 		{
+		}
+
+		constexpr ~Optional()
+		{
+			if (HasValue())
+			{
+				m_Checker.Destroy(std::addressof(m_Storage));
+			}
 		}
 
 		constexpr bool HasValue() const noexcept
@@ -206,11 +217,11 @@ namespace Cafe::Core::Misc
 			return m_Value.Value();
 		}
 
-        constexpr explicit operator bool() const noexcept
+		constexpr explicit operator bool() const noexcept
 		{
 			return HasValue();
 		}
-		
+
 		constexpr T& operator*() const
 		{
 			const auto value = Value();

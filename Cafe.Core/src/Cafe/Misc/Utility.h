@@ -25,7 +25,8 @@ namespace Cafe::Core::Misc
 				if constexpr (!std::is_void_v<std::invoke_result_t<
 				                  Callable&&, decltype(std::get<I>(std::forward<Tuple>(tuple)))>>)
 				{
-					return std::forward<Callable>(callable)(std::get<I>(std::forward<Tuple>(tuple)));
+					return std::forward<Callable>(callable)(
+					    std::get<I>(std::forward<Tuple>(tuple)));
 				}
 				else
 				{
@@ -37,7 +38,8 @@ namespace Cafe::Core::Misc
 	} // namespace Detail
 
 	template <typename Tuple, typename Callable>
-	constexpr auto ForEach(Tuple&& tuple, Callable&& callable) noexcept(noexcept(Detail::ForEachImpl(
+	constexpr auto
+	ForEach(Tuple&& tuple, Callable&& callable) noexcept(noexcept(Detail::ForEachImpl(
 	    std::forward<Tuple>(tuple), std::forward<Callable>(callable),
 	    std::make_index_sequence<std::tuple_size_v<std::remove_reference_t<Tuple>>>{})))
 	{
@@ -94,8 +96,8 @@ namespace Cafe::Core::Misc
 	}
 
 	template <typename T, typename... Args>
-	constexpr void Initialize(T& obj,
-	                          Args&&... args) noexcept(std::is_nothrow_constructible_v<T, Args&&...>)
+	constexpr void
+	Initialize(T& obj, Args&&... args) noexcept(std::is_nothrow_constructible_v<T, Args&&...>)
 	{
 		new (static_cast<void*>(std::addressof(obj))) T(std::forward<Args>(args)...);
 	}
@@ -143,7 +145,8 @@ namespace Cafe::Core::Misc
 		if constexpr (std::is_enum_v<T>)
 		{
 			using UnderlyingType = std::underlying_type_t<T>;
-			return HasAnyFlagsSet(static_cast<UnderlyingType>(test), static_cast<UnderlyingType>(mask));
+			return HasAnyFlagsSet(static_cast<UnderlyingType>(test),
+			                      static_cast<UnderlyingType>(mask));
 		}
 		else
 		{
@@ -159,7 +162,8 @@ namespace Cafe::Core::Misc
 		if constexpr (std::is_enum_v<T>)
 		{
 			using UnderlyingType = std::underlying_type_t<T>;
-			return HasAllFlagsSet(static_cast<UnderlyingType>(test), static_cast<UnderlyingType>(mask));
+			return HasAllFlagsSet(static_cast<UnderlyingType>(test),
+			                      static_cast<UnderlyingType>(mask));
 		}
 		else
 		{

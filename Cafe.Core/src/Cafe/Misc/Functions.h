@@ -92,7 +92,7 @@ namespace Cafe::Core::Misc
 	};
 
 	template <typename ReturnTypeArg, typename... Args>
-	struct FunctionTraits<ReturnTypeArg(Args...) & noexcept>
+	struct FunctionTraits<ReturnTypeArg(Args...)& noexcept>
 	    : FunctionTraits<ReturnTypeArg(Args...) noexcept>
 	{
 		using IsLValueReferenceQualified = std::true_type;
@@ -147,7 +147,7 @@ namespace Cafe::Core::Misc
 	};
 
 	template <typename ReturnTypeArg, typename... Args>
-	struct FunctionTraits<ReturnTypeArg(Args...) && noexcept>
+	struct FunctionTraits<ReturnTypeArg(Args...)&& noexcept>
 	    : FunctionTraits<ReturnTypeArg(Args...) noexcept>
 	{
 		using IsRValueReferenceQualified = std::true_type;
@@ -180,8 +180,8 @@ namespace Cafe::Core::Misc
 	};
 
 	template <typename Prototype>
-	struct IsFunctionConstQualified<Prototype,
-	                                std::void_t<typename FunctionTraits<Prototype>::IsConstQualified>>
+	struct IsFunctionConstQualified<
+	    Prototype, std::void_t<typename FunctionTraits<Prototype>::IsConstQualified>>
 	    : std::true_type
 	{
 	};
@@ -204,7 +204,8 @@ namespace Cafe::Core::Misc
 	};
 
 	template <typename Prototype>
-	struct IsFunctionNoexcept<Prototype, std::void_t<typename FunctionTraits<Prototype>::IsNoexcept>>
+	struct IsFunctionNoexcept<Prototype,
+	                          std::void_t<typename FunctionTraits<Prototype>::IsNoexcept>>
 	    : std::true_type
 	{
 	};
@@ -268,8 +269,8 @@ namespace Cafe::Core::Misc
 	namespace Detail
 	{
 		template <bool IsConstQualified, bool IsVolatileQualified, bool Noexcept,
-		          bool IsLValueReferenceQualified, bool IsRValueReferenceQualified, typename ResultType,
-		          typename... Args>
+		          bool IsLValueReferenceQualified, bool IsRValueReferenceQualified,
+		          typename ResultType, typename... Args>
 		struct MakeFunctionTypeImpl;
 
 		template <typename ResultType, typename... Args>
@@ -464,12 +465,13 @@ namespace Cafe::Core::Misc
 		{
 		};
 
-		template <typename RetType, typename FunctorMapper, typename OpaqueType, typename... HeadType,
-		          typename... TailType>
+		template <typename RetType, typename FunctorMapper, typename OpaqueType,
+		          typename... HeadType, typename... TailType>
 		struct FunctionPtrBindingInfoImpl<RetType, FunctorMapper, 0, std::tuple<>, OpaqueType,
 		                                  std::tuple<HeadType...>, std::tuple<TailType...>>
 		{
-			static constexpr RetType ResultFunction(HeadType... head, OpaqueType opaque, TailType... tail)
+			static constexpr RetType ResultFunction(HeadType... head, OpaqueType opaque,
+			                                        TailType... tail)
 			{
 				return static_cast<RetType>(
 				    FunctorMapper::Cast(opaque)(std::move(head)..., std::move(tail)...));

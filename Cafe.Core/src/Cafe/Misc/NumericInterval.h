@@ -6,7 +6,6 @@ namespace Cafe::Core::Misc
 {
 	struct EmptySetTagType
 	{
-		constexpr EmptySetTagType() noexcept = default;
 	};
 
 	constexpr EmptySetTagType EmptySetTag{};
@@ -27,7 +26,8 @@ namespace Cafe::Core::Misc
 		}
 
 		// 表示实数集
-		constexpr NumericInterval(std::nullopt_t = std::nullopt, std::nullopt_t = std::nullopt) noexcept
+		constexpr NumericInterval(std::nullopt_t = std::nullopt,
+		                          std::nullopt_t = std::nullopt) noexcept
 		    : m_IsEmptySet{ false }
 		{
 		}

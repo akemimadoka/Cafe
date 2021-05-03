@@ -27,9 +27,11 @@ NamespaceIndentation: All
 SpaceAfterCStyleCast: true
 Standard: Cpp11
 UseTab: ForIndentation
-TabWidth: 2
+TabWidth: 4
+IndentWidth: 4
 PointerAlignment: Left
 ColumnLimit: 100
 AlwaysBreakTemplateDeclarations: Yes
+AccessModifierOffset: -4
 
 ...

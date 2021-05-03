@@ -96,9 +96,9 @@ namespace Cafe::Core::Misc
 	template <typename T, typename U>
 	[[nodiscard]] constexpr auto operator+(Ratio<T> const& lhs, Ratio<U> const& rhs) noexcept
 	{
-		return Ratio<std::common_type_t<T, U>>{
-			lhs.GetNum() * rhs.GetDenom() + rhs.GetNum() * lhs.GetDenom(), lhs.GetDenom() * rhs.GetDenom()
-		}
+		return Ratio<std::common_type_t<T, U>>{ lhs.GetNum() * rhs.GetDenom() +
+			                                        rhs.GetNum() * lhs.GetDenom(),
+			                                    lhs.GetDenom() * rhs.GetDenom() }
 		    .Reduce();
 	}
 
@@ -112,7 +112,7 @@ namespace Cafe::Core::Misc
 	[[nodiscard]] constexpr auto operator*(Ratio<T> const& lhs, Ratio<U> const& rhs) noexcept
 	{
 		return Ratio<std::common_type_t<T, U>>{ lhs.GetNum() * rhs.GetNum(),
-			                                      lhs.GetDenom() * rhs.GetDenom() }
+			                                    lhs.GetDenom() * rhs.GetDenom() }
 		    .Reduce();
 	}
 
