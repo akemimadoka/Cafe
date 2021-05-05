@@ -13,3 +13,6 @@
 [submodule "Cafe.Environment"]
 	path = Cafe.Environment
 	url = https://github.com/akemimadoka/Cafe.Environment.git
+[submodule "Cafe.Core"]
+	path = Cafe.Core
+	url = https://github.com/akemimadoka/Cafe.Core.git
